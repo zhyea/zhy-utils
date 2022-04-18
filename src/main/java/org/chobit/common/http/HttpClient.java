@@ -7,17 +7,25 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultServiceUnavailableRetryStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.chobit.common.utils.StrKit;
 import org.chobit.common.utils.UrlHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -136,6 +144,17 @@ public final class HttpClient {
 
 
     /**
+     * 获取GET请求返回的字节数组
+     *
+     * @param url 请求路径
+     * @return 数据流
+     */
+    public static byte[] getForBytes(String url) {
+        return executeForBytes(Request.Get(url), null, null);
+    }
+
+
+    /**
      * 获取POST请求返回的信息流
      *
      * @param url    请求url
@@ -220,7 +239,7 @@ public final class HttpClient {
     }
 
     /**
-     * 执行http请求，并返回HttpResult实例
+     * 执行http请求，并返回InputStream
      *
      * @param request http请求实例
      * @param header  请求header
@@ -231,6 +250,24 @@ public final class HttpClient {
         try {
             Response response = execute0(request, header, proxy);
             return streamOf(response);
+        } catch (IOException e) {
+            logger.error("Execute http request for InputStream error. detail:[{}]", request, e);
+            return null;
+        }
+    }
+
+    /**
+     * 执行http请求，并返回byte数组
+     *
+     * @param request http请求实例
+     * @param header  请求header
+     * @param proxy   请求代理
+     * @return 请求结果
+     */
+    private static byte[] executeForBytes(Request request, Map<String, String> header, HttpHost proxy) {
+        try {
+            Response response = execute0(request, header, proxy);
+            return response.returnContent().asBytes();
         } catch (IOException e) {
             logger.error("Execute http request for InputStream error. detail:[{}]", request, e);
             return null;
@@ -265,22 +302,6 @@ public final class HttpClient {
             logger.error("Execute http request error. detail:[{}]", request, e);
             throw e;
         }
-    }
-
-
-    private static final Executor EXECUTOR = Executor.newInstance(customHttpClient());
-
-
-    /**
-     * 调整Http请求连接池，设置请求重试策略
-     */
-    private static org.apache.http.client.HttpClient customHttpClient() {
-        return HttpClientBuilder.create()
-                .setMaxConnTotal(512)
-                .setMaxConnPerRoute(128)
-                .setRetryHandler(new StandardHttpRequestRetryHandler())
-                .setServiceUnavailableRetryStrategy(new DefaultServiceUnavailableRetryStrategy(6, 3))
-                .build();
     }
 
 
@@ -320,6 +341,45 @@ public final class HttpClient {
             return null;
         }
     }
+
+
+    private final static PoolingHttpClientConnectionManager CONN_MGR;
+    private final static org.apache.http.client.HttpClient CLIENT;
+
+    static {
+        SSLConnectionSocketFactory sf = null;
+
+        try {
+            //信任所有
+            SSLContext context = new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build();
+            sf = new SSLConnectionSocketFactory(context);
+        } catch (Exception e) {
+            logger.error("Create new ssl context failed.", e);
+        }
+
+        final Registry<ConnectionSocketFactory> sfr = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", null != sf ? sf : SSLConnectionSocketFactory.getSocketFactory())
+                .build();
+
+        CONN_MGR = new PoolingHttpClientConnectionManager(sfr);
+        CONN_MGR.setDefaultMaxPerRoute(1024);
+        CONN_MGR.setMaxTotal(512);
+        CONN_MGR.setValidateAfterInactivity(1000);
+
+        CLIENT = HttpClientBuilder.create()
+                // 这里主要用来避免使用http链接请求实际为https的地址
+                .setSSLSocketFactory(sf)
+                .setConnectionManager(CONN_MGR)
+                .setMaxConnTotal(512)
+                .setMaxConnPerRoute(128)
+                .setRetryHandler(new StandardHttpRequestRetryHandler())
+                .setServiceUnavailableRetryStrategy(new DefaultServiceUnavailableRetryStrategy(6, 3))
+                .build();
+    }
+
+
+    private static final Executor EXECUTOR = Executor.newInstance(CLIENT);
 
 
     private HttpClient() {
