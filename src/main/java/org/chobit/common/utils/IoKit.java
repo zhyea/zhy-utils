@@ -22,7 +22,7 @@ public final class IoKit {
      * @param src        源数据
      * @param targetPath 本地路径
      */
-    public static void saveAs(byte[] src, String targetPath) {
+    public static void save(byte[] src, String targetPath) {
         try (FileOutputStream out = new FileOutputStream(targetPath)) {
             out.write(src);
             out.flush();
