@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  *
  * @author robin
  */
-public final class ReflectionUtils {
+public final class ReflectKit {
 
 
     /**
@@ -105,7 +105,7 @@ public final class ReflectionUtils {
     }
 
 
-    private ReflectionUtils() {
+    private ReflectKit() {
         throw new UnsupportedOperationException("Private constructor, cannot be accessed.");
     }
 

@@ -8,28 +8,28 @@ import java.util.Map;
 /**
  * @author robin
  */
-public class UrlHelperTest {
+public class UrlKitTest {
 
 
     private static final String URL = "";
 
     @Test
     public void parseQueryParams() {
-        Map<String, String> params = UrlHelper.parseQueryParams(URL);
+        Map<String, String> params = UrlKit.parseQueryParams(URL);
         System.out.println(params);
     }
 
 
     @Test
     public void parse() {
-        UrlHelper.GetReq params = UrlHelper.parse(URL);
+        UrlKit.GetReq params = UrlKit.parse(URL);
         System.out.println(params);
     }
 
 
     @Test
     public void encode() {
-        System.out.println(UrlHelper.encode("12:12"));
+        System.out.println(UrlKit.encode("12:12"));
     }
 
 
@@ -43,7 +43,7 @@ public class UrlHelperTest {
                 put("c", "3");
             }
         };
-        String s = UrlHelper.buildQueryStr(url, params);
+        String s = UrlKit.buildQueryStr(url, params);
         System.out.println(s);
     }
 

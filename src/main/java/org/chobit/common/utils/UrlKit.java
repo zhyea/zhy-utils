@@ -16,10 +16,10 @@ import static org.chobit.common.utils.StrKit.isBlank;
  *
  * @author robin
  */
-public final class UrlHelper {
+public final class UrlKit {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(UrlHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(UrlKit.class);
 
     /**
      * 解析url中的请求参数
@@ -195,7 +195,7 @@ public final class UrlHelper {
     }
 
 
-    private UrlHelper() {
+    private UrlKit() {
         throw new UnsupportedOperationException("Private constructor, cannot be accessed.");
     }
 

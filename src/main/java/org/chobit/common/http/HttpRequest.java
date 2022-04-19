@@ -1,7 +1,7 @@
 package org.chobit.common.http;
 
 import org.chobit.common.utils.JsonKit;
-import org.chobit.common.utils.UrlHelper;
+import org.chobit.common.utils.UrlKit;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -126,7 +126,7 @@ public class HttpRequest {
     @Override
     public String toString() {
         if (method == HttpMethod.GET) {
-            return UrlHelper.buildQueryStr(this.url, this.params);
+            return UrlKit.buildQueryStr(this.url, this.params);
         } else {
             return JsonKit.toJson(this);
         }

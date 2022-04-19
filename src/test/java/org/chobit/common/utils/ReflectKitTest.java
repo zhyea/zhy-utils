@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author robin
  */
-public class ReflectionUtilsTest {
+public class ReflectKitTest {
 
 
     @Test
@@ -16,7 +16,7 @@ public class ReflectionUtilsTest {
         HttpResult result = new HttpResult(200, "content");
         result.setErrMsg("12333");
 
-        Map<String, Object> map = ReflectionUtils.toMap(result);
+        Map<String, Object> map = ReflectKit.toMap(result);
         String json = JsonKit.toJson(map);
         System.out.println(json);
     }

@@ -21,7 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.chobit.common.utils.StrKit;
-import org.chobit.common.utils.UrlHelper;
+import org.chobit.common.utils.UrlKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public final class HttpClient {
      */
     public static HttpResult get(String url, Map<String, ?> header, Map<String, Object> params) {
         if (null != params) {
-            url = UrlHelper.buildQueryStr(url, params);
+            url = UrlKit.buildQueryStr(url, params);
         }
         Request request = Request.Get(url);
         return execute(request, header, null);
@@ -181,7 +181,7 @@ public final class HttpClient {
         Request req;
         switch (request.getMethod()) {
             case GET:
-                req = Request.Get(UrlHelper.buildQueryStr(request.getUrl(), request.getParams()));
+                req = Request.Get(UrlKit.buildQueryStr(request.getUrl(), request.getParams()));
                 break;
             case POST:
                 req = Request.Post(request.getUrl()).bodyForm(request.params(), StandardCharsets.UTF_8);
