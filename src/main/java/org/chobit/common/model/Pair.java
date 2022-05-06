@@ -1,6 +1,7 @@
 package org.chobit.common.model;
 
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Objects;
  *
  * @author robin
  */
-public class Pair<K, V> {
+public class Pair<K, V> implements Serializable {
 
     /**
      * Key of this <code>Pair</code>.
