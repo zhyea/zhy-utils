@@ -346,6 +346,21 @@ public final class StrKit {
         }
         return builder.toString();
     }
+    
+
+    /**
+     * 字符串切分
+     *
+     * @param src       原始字符串
+     * @param separator 分隔符
+     * @return 字符串切分结果
+     */
+    public static String[] split(String src, String separator) {
+        if (isBlank(src)) {
+            return new String[]{};
+        }
+        return src.split(separator);
+    }
 
 
     private StrKit() {
