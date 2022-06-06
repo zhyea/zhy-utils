@@ -114,6 +114,29 @@ public final class Collections2 {
     }
 
 
+    /**
+     * 拼接集合数据为字符串
+     *
+     * @param coll      集合
+     * @param separator 分隔符
+     * @param <T>       集合数据类型
+     * @return 集合数据对应的字符串
+     */
+    public static <T> String join(Collection<T> coll, String separator) {
+        if (isEmpty(coll)) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (T t : coll) {
+            if (builder.length() > 0) {
+                builder.append(separator);
+            }
+            builder.append(t.toString());
+        }
+        return builder.toString();
+    }
+
+
     private Collections2() {
         throw new UnsupportedOperationException("Private constructor, cannot be accessed.");
     }
