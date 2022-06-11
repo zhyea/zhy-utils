@@ -1,7 +1,7 @@
 package org.chobit.common.json;
 
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
@@ -30,7 +30,9 @@ public class LocalDateTimeModule extends SimpleModule {
 
     public LocalDateTimeModule() {
 
-        super(PackageVersion.VERSION);
+        super(VersionUtil.parseVersion(
+                "0.1.1", "org.chobit.common.json", "zhy-utils"
+        ));
 
         addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         addDeserializer(LocalDate.class, new LocalDateDeserializer());

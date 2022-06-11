@@ -12,7 +12,7 @@
 
     <groupId>org.chobit.common</groupId>
     <artifactId>zhy-utils</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 
     <name>zhy-utils</name>
     <description>some java utils</description>
