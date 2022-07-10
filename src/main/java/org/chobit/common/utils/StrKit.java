@@ -149,6 +149,25 @@ public final class StrKit {
         return PATTERN_DOUBLE.matcher(str.trim()).matches();
     }
 
+    /**
+     * 判断字符串是否是数字
+     *
+     * @param str 字符串
+     * @return 是否是整数字符串
+     */
+    public static boolean isNumeric(String str) {
+        if (str != null && str.length() != 0) {
+            int l = str.length();
+            for (int i = 0; i < l; ++i) {
+                if (!Character.isDigit(str.codePointAt(i))) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 判断字符串是否是布尔型字符串
@@ -346,7 +365,7 @@ public final class StrKit {
         }
         return builder.toString();
     }
-    
+
 
     /**
      * 字符串切分
