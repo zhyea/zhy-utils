@@ -4,11 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.chobit.common.constants.Symbol.QUESTION_MARK;
 import static org.chobit.common.utils.StrKit.isBlank;
 
 /**
@@ -133,8 +136,8 @@ public final class UrlKit {
 
             String paramStr = buildQueryStr(params, true);
 
-            if (!url.endsWith("?")) {
-                url = url + "?";
+            if (!url.endsWith(QUESTION_MARK)) {
+                url = url + QUESTION_MARK;
             }
 
             return url + paramStr;
@@ -194,6 +197,24 @@ public final class UrlKit {
         return buildQueryStr(url, params);
     }
 
+    /**
+     * 解析根域名
+     *
+     * @param url 请求路径
+     * @return 根域名
+     */
+    public static String parseRoot(String url) {
+        try {
+            URL u = new URL(url);
+            String protocol = u.getProtocol();
+            String host = u.getHost();
+            int port = u.getPort();
+            return protocol + "://" + host + (port > 0 ? ":" + port : "");
+        } catch (MalformedURLException e) {
+            logger.error("parse root domain error. src url: {}", url, e);
+            return null;
+        }
+    }
 
     private UrlKit() {
         throw new UnsupportedOperationException("Private constructor, cannot be accessed.");
