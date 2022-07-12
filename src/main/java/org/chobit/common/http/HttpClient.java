@@ -57,6 +57,17 @@ public final class HttpClient {
     /**
      * Get请求
      *
+     * @param url   请求URL
+     * @param proxy 代理地址
+     * @return 请求结果
+     */
+    public static HttpResult get(String url, HttpHost proxy) {
+        return get(url, null, null, proxy);
+    }
+
+    /**
+     * Get请求
+     *
      * @param url    请求url
      * @param header 请求header
      * @param params 请求参数
@@ -68,6 +79,23 @@ public final class HttpClient {
         }
         Request request = Request.Get(url);
         return execute(request, header, null);
+    }
+
+    /**
+     * Get请求
+     *
+     * @param url    请求url
+     * @param header 请求header
+     * @param params 请求参数
+     * @param proxy  代理地址
+     * @return 请求结果
+     */
+    public static HttpResult get(String url, Map<String, ?> header, Map<String, Object> params, HttpHost proxy) {
+        if (null != params) {
+            url = UrlKit.buildQueryStr(url, params);
+        }
+        Request request = Request.Get(url);
+        return execute(request, header, proxy);
     }
 
     /**
@@ -120,6 +148,19 @@ public final class HttpClient {
      * @return 请求结果
      */
     public static HttpResult post(String url, Map<String, String> header, Map<String, Object> params) {
+        return post(url, header, params, null);
+    }
+
+    /**
+     * post body请求
+     *
+     * @param url    请求url
+     * @param header 请求header
+     * @param params 请求参数
+     * @param proxy  代理地址
+     * @return 请求结果
+     */
+    public static HttpResult post(String url, Map<String, String> header, Map<String, Object> params, HttpHost proxy) {
         if (null == params || params.isEmpty()) {
             throw new IllegalArgumentException("Params of POST request cannot be empty.");
         }
@@ -128,7 +169,7 @@ public final class HttpClient {
                 .map(e -> new BasicNameValuePair(e.getKey(), e.getValue().toString()))
                 .collect(Collectors.toList());
         Request request = Request.Post(url).bodyForm(pairs, StandardCharsets.UTF_8);
-        return execute(request, header, null);
+        return execute(request, header, proxy);
     }
 
 
