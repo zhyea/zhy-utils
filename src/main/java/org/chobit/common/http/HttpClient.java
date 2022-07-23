@@ -185,6 +185,18 @@ public final class HttpClient {
 
 
     /**
+     * 获取GET请求返回的信息流
+     *
+     * @param url   请求路径
+     * @param proxy 代理信息
+     * @return 数据流
+     */
+    public static InputStream getForStream(String url, HttpHost proxy) {
+        return executeForStream(Request.Get(url), null, proxy);
+    }
+
+
+    /**
      * 获取GET请求返回的字节数组
      *
      * @param url 请求路径
@@ -192,6 +204,18 @@ public final class HttpClient {
      */
     public static byte[] getForBytes(String url) {
         return executeForBytes(Request.Get(url), null, null);
+    }
+
+
+    /**
+     * 获取GET请求返回的字节数组
+     *
+     * @param url   请求路径
+     * @param proxy 代理信息
+     * @return 数据流
+     */
+    public static byte[] getForBytes(String url, HttpHost proxy) {
+        return executeForBytes(Request.Get(url), null, proxy);
     }
 
 
