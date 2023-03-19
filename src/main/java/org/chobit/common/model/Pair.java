@@ -1,6 +1,5 @@
 package org.chobit.common.model;
 
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -105,7 +104,7 @@ public class Pair<K, V> implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o instanceof javafx.util.Pair) {
+        if (o instanceof Pair) {
             Pair pair = (Pair) o;
             if (!Objects.equals(key, pair.key)) {
                 return false;
